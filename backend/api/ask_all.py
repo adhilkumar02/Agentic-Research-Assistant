@@ -1,4 +1,4 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 
 from core.document_memory import DOCUMENT_INDEX
@@ -19,7 +19,7 @@ class AskAllRequest(BaseModel):
 @router.post("/ask_all")
 def ask_all_documents(req: AskAllRequest):
     if not DOCUMENT_INDEX:
-        return {"error": "No documents indexed"}
+        raise HTTPException(status_code=400, detail="No documents are currently indexed. Please upload a document first.")
 
     question_embedding = embed_text(req.question)
 
